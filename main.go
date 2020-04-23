@@ -1,11 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/acjohnson/portscan-api/database"
+	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"net/http"
 	"net/url"
-	"github.com/acjohnson/portscan-api/schema"
 )
 
 const (
@@ -111,11 +114,23 @@ func (s Scans) Get(values url.Values) (int, interface{}) {
 }
 
 func main() {
-	schema.Tables()
+	db, err := sql.Open("mysql", "portscan-api:password@tcp(127.0.0.1:3306)/portscan-api")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	// Validate db connection
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+		panic(err.Error())
+	}
+
+	database.Tables(db)
 	var hosts Hosts
 	var scans Scans
 	AddResource(hosts, "/hosts")
 	AddResource(scans, "/scans")
 	Start(4000)
 }
-
