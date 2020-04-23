@@ -1,3 +1,5 @@
 Gopkg.lock
-nmap-api
+portscan-api
 *.test
+*.swp
+go.sum

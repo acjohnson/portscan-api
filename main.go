@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"github.com/acjohnson/portscan-api/schema"
 )
 
 const (
@@ -84,36 +85,37 @@ func Start(port int) {
 	http.ListenAndServe(portString, nil)
 }
 
-// Test resource
-type Test struct {
+// Hosts resource
+type Hosts struct {
 	ResourceBase
 }
 
-// Test GET method
-func (t Test) Get(values url.Values) (int, interface{}) {
+// Hosts GET method
+func (h Hosts) Get(values url.Values) (int, interface{}) {
 	return http.StatusOK, "YAY"
 }
 
-// Test POST method
-func (t Test) Post(values url.Values) (int, interface{}) {
+// Hosts POST method
+func (h Hosts) Post(values url.Values) (int, interface{}) {
 	return http.StatusAccepted, "Post"
 }
 
-// Test2 resource
-type Test2 struct {
+// Scans resource
+type Scans struct {
 	ResourceBase
 }
 
-// Test GET method
-func (t Test2) Get(values url.Values) (int, interface{}) {
+// Scans GET method
+func (s Scans) Get(values url.Values) (int, interface{}) {
 	return http.StatusOK, "YAY foo"
 }
 
 func main() {
-	var a Test
-	var b Test2
-	AddResource(a, "/")
-	AddResource(b, "/foo")
+	schema.Tables()
+	var hosts Hosts
+	var scans Scans
+	AddResource(hosts, "/hosts")
+	AddResource(scans, "/scans")
 	Start(4000)
 }
 
