@@ -2,8 +2,8 @@ package portscanner
 
 import (
 	"encoding/xml"
-	"os/exec"
 	"log"
+	"os/exec"
 )
 
 type Nmaprun struct {
@@ -33,7 +33,7 @@ type Nmaprun struct {
 
 func ScanHost(ipv4 string) (map[string]string, error) {
 	cmd := exec.Command("nmap", "-oX", "-", "-p", "3-400", ipv4)
-        out, err := cmd.CombinedOutput()
+	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf("cmd.CombinedOutput() failed with %s\n", err)
 	}
