@@ -122,10 +122,10 @@ func (s Scans) Get(values url.Values) (int, interface{}) {
 
 // Scans PUT method
 func (s Scans) Put(values url.Values) (int, interface{}) {
-	//r, err := database.UpdateScans(db, values)
-	r, err := portscanner.ScanHost(values.Get("ipv4"))
+	port_status, err := portscanner.ScanHost(values.Get("ipv4"))
+	r, err := database.UpdateScans(db, values, port_status)
 	if err != nil {
-			log.Fatal(err)
+		log.Fatal(err)
 	}
 	return http.StatusAccepted, r
 }
