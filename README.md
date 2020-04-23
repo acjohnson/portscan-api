@@ -36,7 +36,7 @@ Should return http status code `202` and json
 }
 ```
 
-- Retrieving a scan by its id
+- Retrieving a scan by scan id
 ```sh
 http GET http://127.0.0.1:10000/scans?id=11
 ```
@@ -49,5 +49,37 @@ Should return http status code `200` and json
     "last_scanned": "2020-04-23 14:26:29",
     "port_number": 80,
     "port_status": "open"
+}
+```
+
+- Retrieving a scan by host ip
+```sh
+http GET http://127.0.0.1:10000/scans?ipv4=127.0.0.1
+```
+
+Should return http status code `200` and json
+```json
+{
+    "111": {
+        "host_id": 4,
+        "id": 28,
+        "last_scanned": "2020-04-23 15:40:44",
+        "port_number": 111,
+        "port_status": "open"
+    },
+    "139": {
+        "host_id": 4,
+        "id": 29,
+        "last_scanned": "2020-04-23 15:40:44",
+        "port_number": 139,
+        "port_status": "open"
+    },
+    "22": {
+        "host_id": 4,
+        "id": 27,
+        "last_scanned": "2020-04-23 15:40:44",
+        "port_number": 22,
+        "port_status": "open"
+    }
 }
 ```

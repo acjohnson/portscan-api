@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"encoding/json"
 )
 
-func QueryScans(db *sql.DB, values url.Values) (interface{}, error) {
+func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 	var sql_str string
-	var b []byte
-	var r interface{}
 	var err error
+
+	m := make(map[int]interface{})
 
 	var (
 		id           int
@@ -42,12 +41,25 @@ func QueryScans(db *sql.DB, values url.Values) (interface{}, error) {
 
 	if sql_str != "" {
 		rows, err := db.Query(sql_str)
+
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer rows.Close()
+
 		for rows.Next() {
-			err := rows.Scan(&id, &host_id, &last_scanned, &port_number, &port_status)
+			if err := rows.Scan(&id, &host_id, &last_scanned, &port_number, &port_status); err != nil {
+				return m, err
+			}
+
+			m[port_number] = map[string]interface{}{
+				"host_id": host_id,
+				"id": id,
+				"last_scanned": last_scanned,
+				"port_number": port_number,
+				"port_status": port_status,
+			}
+
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -58,16 +70,7 @@ func QueryScans(db *sql.DB, values url.Values) (interface{}, error) {
 			log.Fatal(err)
 		}
 	}
-	if port_status != "" {
-		json_str := fmt.Sprintf("{\"id\": %d, " +
-		                        "\"host_id\": %d, " +
-					"\"last_scanned\": \"%s\", " +
-					"\"port_number\": %d, " +
-					"\"port_status\": \"%s\"}", id, host_id, last_scanned, port_number, port_status)
-		b = []byte(json_str)
-		err = json.Unmarshal(b, &r)
-	}
-	return r, err
+	return m, err
 }
 
 func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (map[string]string, error) {
