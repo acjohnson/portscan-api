@@ -11,6 +11,8 @@ import (
 	"net/url"
 )
 
+var db *sql.DB
+
 const (
 	MethodGet    = "GET"
 	MethodPost   = "POST"
@@ -83,7 +85,7 @@ func AddResource(resource Resource, path string) {
 	http.HandleFunc(path, requestHandler(resource))
 }
 
-func Start(port int) {
+func StartServer(port int) {
 	portString := fmt.Sprintf(":%d", port)
 	http.ListenAndServe(portString, nil)
 }
@@ -110,11 +112,16 @@ type Scans struct {
 
 // Scans GET method
 func (s Scans) Get(values url.Values) (int, interface{}) {
-	return http.StatusOK, "YAY foo"
+	r, err := database.QueryScans(db, values)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return http.StatusOK, r
 }
 
 func main() {
-	db, err := sql.Open("mysql", "portscan-api:password@tcp(127.0.0.1:3306)/portscan-api")
+	var err error
+	db, err = sql.Open("mysql", "portscan-api:password@tcp(127.0.0.1:3306)/portscan-api")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -132,5 +139,5 @@ func main() {
 	var scans Scans
 	AddResource(hosts, "/hosts")
 	AddResource(scans, "/scans")
-	Start(4000)
+	StartServer(4000)
 }
