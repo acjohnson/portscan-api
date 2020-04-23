@@ -150,5 +150,5 @@ func main() {
 	var scans Scans
 	AddResource(hosts, "/hosts")
 	AddResource(scans, "/scans")
-	StartServer(4000)
+	StartServer(10000)
 }
