@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/acjohnson/portscan-api/database"
+	"github.com/acjohnson/portscan-api/portscanner"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
@@ -117,6 +118,16 @@ func (s Scans) Get(values url.Values) (int, interface{}) {
 		log.Fatal(err)
 	}
 	return http.StatusOK, r
+}
+
+// Scans PUT method
+func (s Scans) Put(values url.Values) (int, interface{}) {
+	//r, err := database.UpdateScans(db, values)
+	r, err := portscanner.ScanHost(values.Get("ipv4"))
+	if err != nil {
+			log.Fatal(err)
+	}
+	return http.StatusAccepted, r
 }
 
 func main() {

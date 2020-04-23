@@ -50,3 +50,12 @@ func QueryScans(db *sql.DB, values url.Values) (string, error) {
 	}
 	return r, err
 }
+
+//func UpdateScans(db *sql.DB, values url.Values) (string, error) {
+//	var sql_str string
+//	var r string
+//	var err error
+
+//	if values.Get("ipv4")
+//	if values.Get("ports")
+//}
