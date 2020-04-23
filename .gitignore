@@ -3,3 +3,4 @@ portscan-api
 *.test
 *.swp
 go.sum
+conf.json

@@ -1,7 +1,7 @@
 portscan-api
 ============
 
-**Building**
+**Build**
 
 Clone this repo and build using golang 1.11+ (uses go modules)
 ```sh
@@ -17,6 +17,12 @@ flush privileges;
 ```
 
 Table creation is handled automatically by the database package
+
+**Configuration**
+
+Create a configuration file called `conf.json` in the root of this project.
+
+conf.json.example has been provided to help you get started.
 
 **Routes**
 

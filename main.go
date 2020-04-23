@@ -10,9 +10,18 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 var db *sql.DB
+
+type Configuration struct {
+	Port     int    `json:"port"`
+	LogLevel string `json:"log_level"`
+	Debug    bool   `json:"debug"`
+	DbType   string `json:"dbtype"`
+	DbUri    string `json:"dburi"`
+}
 
 const (
 	MethodGet    = "GET"
@@ -132,7 +141,20 @@ func (s Scans) Put(values url.Values) (int, interface{}) {
 
 func main() {
 	var err error
-	db, err = sql.Open("mysql", "portscan-api:password@tcp(127.0.0.1:3306)/portscan-api")
+
+	// Load Config
+	conf_file, _ := os.Open("conf.json")
+	defer conf_file.Close()
+	decoder := json.NewDecoder(conf_file)
+	configuration := Configuration{}
+	err = decoder.Decode(&configuration)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Set up db connect string
+	db, err = sql.Open(configuration.DbType,
+		configuration.DbUri)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -150,5 +172,5 @@ func main() {
 	var scans Scans
 	AddResource(hosts, "/hosts")
 	AddResource(scans, "/scans")
-	StartServer(10000)
+	StartServer(configuration.Port)
 }

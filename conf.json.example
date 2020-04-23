@@ -1,0 +1,7 @@
+{
+  "port": 10000,
+  "log_level": "WARN",
+  "debug": true,
+  "dbtype": "mysql",
+  "dburi": "portscan-api:password@tcp(127.0.0.1:3306)/portscan-api"
+}
