@@ -27,6 +27,12 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 		port_status  string
 	)
 
+	sql_str = fmt.Sprintf("select id, " +
+		"host_id, " +
+		"last_scanned, " +
+		"port_number, " +
+		"port_status from scans")
+
 	if values.Get("id") != "" {
 		sql_str = fmt.Sprintf("select id, "+
 			"host_id, "+
