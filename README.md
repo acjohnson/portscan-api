@@ -36,24 +36,81 @@ http PUT http://127.0.0.1:10000/scans?ipv4='127.0.0.1'
 ```
 
 Should return http status code `202` and json
+
+_Note: Output includes previous scan results as well as current port status under the IP address_
 ```json
 {
-    "111": "open",
-    "139": "open",
-    "22": "open"
+    "111": {
+        "host_id": "1",
+        "id": "1",
+        "last_scanned": "2020-04-24 02:29:57",
+        "port_number": "111",
+        "port_status": "open"
+    },
+    "127.0.0.1": {
+        "111": "open",
+        "139": "open",
+        "22": "open"
+    },
+    "139": {
+        "host_id": "1",
+        "id": "2",
+        "last_scanned": "2020-04-24 02:29:57",
+        "port_number": "139",
+        "port_status": "open"
+    },
+    "22": {
+        "host_id": "1",
+        "id": "3",
+        "last_scanned": "2020-04-24 02:29:57",
+        "port_number": "22",
+        "port_status": "open"
+    }
+}
+```
+
+- List all scans
+```
+http GET http://127.0.0.1:10000/scans
+```
+
+Should return http status code `200` and json
+```json
+{
+    "111": {
+        "host_id": "1",
+        "id": "1",
+        "last_scanned": "2020-04-24 02:29:57",
+        "port_number": "111",
+        "port_status": "open"
+    },
+    "139": {
+        "host_id": "1",
+        "id": "2",
+        "last_scanned": "2020-04-24 02:29:57",
+        "port_number": "139",
+        "port_status": "open"
+    },
+    "22": {
+        "host_id": "1",
+        "id": "3",
+        "last_scanned": "2020-04-24 02:29:57",
+        "port_number": "22",
+        "port_status": "open"
+    }
 }
 ```
 
 - Retrieving a scan by scan id
 ```sh
-http GET http://127.0.0.1:10000/scans?id=11
+http GET http://127.0.0.1:10000/scans?id=3
 ```
 
 Should return http status code `200` and json
 ```json
 {
     "host_id": 1,
-    "id": 11,
+    "id": 3,
     "last_scanned": "2020-04-23 14:26:29",
     "port_number": 80,
     "port_status": "open"
