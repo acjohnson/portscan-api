@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"github.com/acjohnson/portscan-api/logger"
 	"log"
 	"net/url"
 )
@@ -10,6 +11,11 @@ import (
 func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 	var sql_str string
 	var err error
+
+	logger, err := logger.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	m := make(map[int]interface{})
 
@@ -43,7 +49,7 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 		rows, err := db.Query(sql_str)
 
 		if err != nil {
-			log.Fatal(err)
+			logger.Println(err)
 		}
 		defer rows.Close()
 
@@ -61,13 +67,13 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 			}
 
 			if err != nil {
-				log.Fatal(err)
+				logger.Println(err)
 			}
-			log.Println(id, host_id, last_scanned, port_number, port_status)
+			logger.Println(id, host_id, last_scanned, port_number, port_status)
 		}
 		err = rows.Err()
 		if err != nil {
-			log.Fatal(err)
+			logger.Println(err)
 		}
 	}
 	return m, err
@@ -76,12 +82,18 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (map[string]string, error) {
 	var sql_str string
 	var err error
+
+	logger, err := logger.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if values.Get("ipv4") != "" {
 		// Insert host if not already in DB
 		sql_str = fmt.Sprintf("insert ignore into hosts(ipv4) values (INET_ATON('%s'))", values.Get("ipv4"))
 		rows, err := db.Query(sql_str)
 		if err != nil {
-			log.Fatal(err)
+			logger.Println(err)
 		}
 		defer rows.Close()
 
@@ -91,7 +103,7 @@ func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (
 			")", values.Get("ipv4"))
 		rows, err = db.Query(sql_str)
 		if err != nil {
-			log.Fatal(err)
+			logger.Println(err)
 		}
 		defer rows.Close()
 
@@ -105,13 +117,13 @@ func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (
 				")", values.Get("ipv4"), port, status)
 			rows, err = db.Query(sql_str)
 			if err != nil {
-				log.Fatal(err)
+				logger.Println(err)
 			}
 			defer rows.Close()
 
 			err = rows.Err()
 			if err != nil {
-				log.Fatal(err)
+				logger.Println(err)
 			}
 		}
 

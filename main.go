@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/acjohnson/portscan-api/database"
+	"github.com/acjohnson/portscan-api/logger"
 	"github.com/acjohnson/portscan-api/portscanner"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
@@ -152,18 +153,23 @@ func main() {
 		log.Fatal(err)
 	}
 
+	logger, err := logger.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Set up db connect string
 	db, err = sql.Open(configuration.DbType,
 		configuration.DbUri)
 	if err != nil {
-		log.Fatal(err)
+		logger.Println(err)
 	}
 	defer db.Close()
 
 	// Validate db connection
 	err = db.Ping()
 	if err != nil {
-		log.Fatal(err)
+		logger.Println(err)
 		panic(err.Error())
 	}
 
