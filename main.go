@@ -108,10 +108,12 @@ type Scans struct {
 // Scans GET method
 func (s Scans) Get(values url.Values) (int, interface{}) {
 	r, err := database.QueryScans(db, values)
+	status := http.StatusOK
 	if err != nil {
 		log.Fatal(err)
+		status = http.StatusInternalServerError
 	}
-	return http.StatusOK, r
+	return status, r
 }
 
 // Scans PUT method
@@ -119,10 +121,12 @@ func (s Scans) Put(values url.Values) (int, interface{}) {
 	previous_scan, err := database.QueryScans(db, values)
 	port_status, err := portscanner.ScanHost(values.Get("ipv4"))
 	r, err := database.UpdateScans(db, values, port_status, previous_scan)
+	status := http.StatusAccepted
 	if err != nil {
 		log.Fatal(err)
+		status = http.StatusInternalServerError
 	}
-	return http.StatusAccepted, r
+	return status, r
 }
 
 func main() {
