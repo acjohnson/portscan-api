@@ -8,11 +8,13 @@ Clone this repo and build using golang 1.11+ (uses go modules)
 go build
 ```
 
-Install mysql/mariadb and create database:
+Install `nmap` and `mysql` or `mariadb` using your favorite package manager
+and create the database
 
 ```sql
 create database `portscan-api` character set UTF8 collate utf8_bin;
-grant all privileges on `portscan-api`.* to 'portscan-api'@'%' identified by "<secret>";
+create user 'portscan-api'@'%' identified by '<secret>';
+grant all privileges on `portscan-api`.* to 'portscan-api'@'%';
 flush privileges;
 ```
 
