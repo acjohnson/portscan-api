@@ -101,21 +101,6 @@ func StartServer(port int) {
 	http.ListenAndServe(portString, nil)
 }
 
-// Hosts resource
-type Hosts struct {
-	ResourceBase
-}
-
-// Hosts GET method
-func (h Hosts) Get(values url.Values) (int, interface{}) {
-	return http.StatusOK, "YAY"
-}
-
-// Hosts POST method
-func (h Hosts) Post(values url.Values) (int, interface{}) {
-	return http.StatusAccepted, "Post"
-}
-
 // Scans resource
 type Scans struct {
 	ResourceBase
@@ -175,9 +160,7 @@ func main() {
 	}
 
 	database.Tables(db)
-	var hosts Hosts
 	var scans Scans
-	AddResource(hosts, "/hosts")
 	AddResource(scans, "/scans")
 	StartServer(configuration.Port)
 }

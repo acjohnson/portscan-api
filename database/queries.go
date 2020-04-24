@@ -139,6 +139,7 @@ func UpdateScans(db *sql.DB,
 		}
 
 	}
+	// merge port_status with previous_scan map for easy viewing of previous scan results
 	for k, v := range port_status {
 		previous_scan[k] = v
 	}
