@@ -31,7 +31,7 @@ type Nmaprun struct {
 	} `xml:"runstats"`
 }
 
-func ScanHost(ipv4 string) (map[string]string, error) {
+func ScanHost(ipv4 string) (map[string]map[string]string, error) {
 	cmd := exec.Command("nmap", "-oX", "-", "-p", "3-400", ipv4)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -42,9 +42,10 @@ func ScanHost(ipv4 string) (map[string]string, error) {
 
 	xml.Unmarshal(out, b)
 
-	port_status := make(map[string]string)
+	m := make(map[string]map[string]string)
+	m[ipv4] = make(map[string]string)
 	for _, v := range b.Host.Ports.Port {
-		port_status[v.Portid] = v.State.State
+		m[ipv4][v.Portid] = v.State.State
 	}
-	return port_status, err
+	return m, err
 }

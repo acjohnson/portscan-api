@@ -132,8 +132,9 @@ func (s Scans) Get(values url.Values) (int, interface{}) {
 
 // Scans PUT method
 func (s Scans) Put(values url.Values) (int, interface{}) {
+	previous_scan, err := database.QueryScans(db, values)
 	port_status, err := portscanner.ScanHost(values.Get("ipv4"))
-	r, err := database.UpdateScans(db, values, port_status)
+	r, err := database.UpdateScans(db, values, port_status, previous_scan)
 	if err != nil {
 		log.Fatal(err)
 	}

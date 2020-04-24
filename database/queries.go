@@ -6,9 +6,10 @@ import (
 	"github.com/acjohnson/portscan-api/logger"
 	"log"
 	"net/url"
+	"strconv"
 )
 
-func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
+func QueryScans(db *sql.DB, values url.Values) (map[string]map[string]string, error) {
 	var sql_str string
 	var err error
 
@@ -17,7 +18,7 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 		log.Fatal(err)
 	}
 
-	m := make(map[int]interface{})
+	m := make(map[string]map[string]string)
 
 	var (
 		id           int
@@ -64,11 +65,11 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 				return m, err
 			}
 
-			m[port_number] = map[string]interface{}{
-				"host_id":      host_id,
-				"id":           id,
+			m[strconv.Itoa(port_number)] = map[string]string{
+				"host_id":      strconv.Itoa(host_id),
+				"id":           strconv.Itoa(id),
 				"last_scanned": last_scanned,
-				"port_number":  port_number,
+				"port_number":  strconv.Itoa(port_number),
 				"port_status":  port_status,
 			}
 
@@ -85,7 +86,11 @@ func QueryScans(db *sql.DB, values url.Values) (map[int]interface{}, error) {
 	return m, err
 }
 
-func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (map[string]string, error) {
+func UpdateScans(db *sql.DB,
+	values url.Values,
+	port_status map[string]map[string]string,
+	previous_scan map[string]map[string]string) (map[string]map[string]string, error) {
+
 	var sql_str string
 	var err error
 
@@ -114,7 +119,7 @@ func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (
 		defer rows.Close()
 
 		// Iterate port_status map from nmap return
-		for port, status := range port_status {
+		for port, status := range port_status[values.Get("ipv4")] {
 			sql_str = fmt.Sprintf("insert into scans(host_id, "+
 				"port_number, "+
 				"port_status) "+
@@ -134,5 +139,8 @@ func UpdateScans(db *sql.DB, values url.Values, port_status map[string]string) (
 		}
 
 	}
-	return port_status, err
+	for k, v := range port_status {
+		previous_scan[k] = v
+	}
+	return previous_scan, err
 }
