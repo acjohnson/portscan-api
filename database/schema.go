@@ -9,7 +9,7 @@ import (
 func Tables(db *sql.DB) error {
 	var err error
 
-	logger, err := logger.Load()
+	logger, err := logger.Load("INFO")
 	if err != nil {
 		log.Fatal(err)
 	}

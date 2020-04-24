@@ -8,7 +8,7 @@ import (
 
 var f *os.File
 
-func Load() (*log.Logger, error) {
+func Load(log_level string) (*log.Logger, error) {
 	f, err := os.OpenFile("/tmp/portscan-api.log",
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
@@ -17,6 +17,15 @@ func Load() (*log.Logger, error) {
 		os.Exit(1)
 	}
 
-	logger := log.New(f, "applog: ", log.Lshortfile|log.LstdFlags)
+	prefix_str := "info: "
+
+	if log_level == "DEBUG" {
+		prefix_str = "debug: "
+	}
+	if log_level == "WARN" {
+		prefix_str = "warn: "
+	}
+
+	logger := log.New(f, prefix_str, log.Lshortfile|log.LstdFlags)
 	return logger, err
 }

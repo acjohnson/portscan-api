@@ -13,7 +13,7 @@ func QueryScans(db *sql.DB, values url.Values) (map[string]map[string]string, er
 	var sql_str string
 	var err error
 
-	logger, err := logger.Load()
+	logger, err := logger.Load("DEBUG")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +94,7 @@ func UpdateScans(db *sql.DB,
 	var sql_str string
 	var err error
 
-	logger, err := logger.Load()
+	logger, err := logger.Load("DEBUG")
 	if err != nil {
 		log.Fatal(err)
 	}

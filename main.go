@@ -19,7 +19,6 @@ var db *sql.DB
 type Configuration struct {
 	Port     int    `json:"port"`
 	LogLevel string `json:"log_level"`
-	Debug    bool   `json:"debug"`
 	DbType   string `json:"dbtype"`
 	DbUri    string `json:"dburi"`
 }
@@ -139,7 +138,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	logger, err := logger.Load()
+	logger, err := logger.Load("DEBUG")
 	if err != nil {
 		log.Fatal(err)
 	}
